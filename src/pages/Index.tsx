@@ -56,10 +56,10 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg">
-                <Link to="/upload">Get Started Free</Link>
+                <Link to="/auth">Get Started Free</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="px-8 py-3 text-lg border-2">
-                <Link to="/dashboard">View Dashboard</Link>
+                <Link to="/dashboard">Browse Courses</Link>
               </Button>
             </div>
           </div>
@@ -74,7 +74,7 @@ const Index = () => {
               Everything you need to create amazing courses
             </h2>
             <p className="text-xl text-gray-600">
-              Powerful AI tools designed specifically for educators
+              Powerful AI tools designed specifically for educators and learners
             </p>
           </div>
           
@@ -96,18 +96,58 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Ready to revolutionize your teaching?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of educators who are already using AI to create better learning experiences.
-          </p>
-          <Button asChild size="lg" variant="secondary" className="px-8 py-3 text-lg">
-            <Link to="/upload">Start Creating Now</Link>
-          </Button>
+      {/* Role-based CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* For Teachers */}
+            <Card className="bg-gradient-to-br from-blue-600 to-purple-600 text-white border-0">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold flex items-center">
+                  <BookOpen className="h-8 w-8 mr-3" />
+                  For Educators
+                </CardTitle>
+                <CardDescription className="text-blue-100">
+                  Create engaging courses from your existing materials
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-blue-100">
+                  <li>• Upload documents and generate courses instantly</li>
+                  <li>• Manage your knowledge base efficiently</li>
+                  <li>• Create public, private, or paid content</li>
+                  <li>• Track student progress and engagement</li>
+                </ul>
+                <Button asChild variant="secondary" size="lg" className="w-full">
+                  <Link to="/auth">Start Teaching</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* For Students */}
+            <Card className="bg-gradient-to-br from-green-600 to-teal-600 text-white border-0">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold flex items-center">
+                  <Users className="h-8 w-8 mr-3" />
+                  For Learners
+                </CardTitle>
+                <CardDescription className="text-green-100">
+                  Access a world of knowledge and interactive learning
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-green-100">
+                  <li>• Browse thousands of AI-generated courses</li>
+                  <li>• Take interactive quizzes and assessments</li>
+                  <li>• Learn at your own pace</li>
+                  <li>• Track your learning progress</li>
+                </ul>
+                <Button asChild variant="secondary" size="lg" className="w-full">
+                  <Link to="/auth">Start Learning</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -115,7 +155,7 @@ const Index = () => {
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-400">
-            © 2024 ELearning AI. Empowering educators with artificial intelligence.
+            © 2024 ELearning AI. Empowering educators and learners with artificial intelligence.
           </p>
         </div>
       </footer>

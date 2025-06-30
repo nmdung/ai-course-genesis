@@ -1,11 +1,14 @@
 
 import { Button } from "@/components/ui/button";
-import { BookOpen, Menu, X } from "lucide-react";
+import { BookOpen, Menu, X, LogIn, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // TODO: Replace with actual auth state
+  const isAuthenticated = false;
+  const userRole = "student"; // or "teacher"
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
@@ -21,15 +24,37 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Dashboard
-            </Link>
-            <Link to="/upload" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Upload
-            </Link>
-            <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              <Link to="/upload">Get Started</Link>
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  Dashboard
+                </Link>
+                {userRole === "teacher" && (
+                  <Link to="/upload" className="text-gray-700 hover:text-blue-600 transition-colors">
+                    Create Course
+                  </Link>
+                )}
+                <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-600">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  Browse Courses
+                </Link>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/auth" className="text-gray-700 hover:text-blue-600">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Link>
+                </Button>
+                <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  <Link to="/auth">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -48,23 +73,49 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <Link 
-                to="/dashboard" 
-                className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link 
-                to="/upload" 
-                className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Upload
-              </Link>
-              <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 w-fit">
-                <Link to="/upload" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  {userRole === "teacher" && (
+                    <Link 
+                      to="/upload" 
+                      className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Create Course
+                    </Link>
+                  )}
+                  <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-600 w-fit">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Browse Courses
+                  </Link>
+                  <Button asChild variant="ghost" size="sm" className="w-fit">
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 w-fit">
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}

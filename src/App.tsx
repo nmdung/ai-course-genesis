@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Course from "./pages/Course";
 import Quiz from "./pages/Quiz";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/course/:id" element={<Course />} />
