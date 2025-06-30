@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // TODO: Replace with actual auth state
   const isAuthenticated = false;
-  const userRole: "student" | "teacher" = "student"; // This can now be either value
+  const userRole: "student" | "teacher" = "teacher"; // Default to teacher
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
