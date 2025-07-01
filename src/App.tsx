@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
+import BaseKnowledge from "./pages/BaseKnowledge";
 import Course from "./pages/Course";
 import Quiz from "./pages/Quiz";
 import Auth from "./pages/Auth";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/base-knowledge" element={<BaseKnowledge />} />
           <Route path="/course/:id" element={<Course />} />
           <Route path="/quiz/:id" element={<Quiz />} />
           <Route path="*" element={<NotFound />} />

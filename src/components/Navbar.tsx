@@ -30,9 +30,14 @@ const Navbar = () => {
                   Dashboard
                 </Link>
                 {userRole === "teacher" && (
-                  <Link to="/upload" className="text-gray-700 hover:text-blue-600 transition-colors">
-                    Create Course
-                  </Link>
+                  <>
+                    <Link to="/upload" className="text-gray-700 hover:text-blue-600 transition-colors">
+                      Create Course
+                    </Link>
+                    <Link to="/base-knowledge" className="text-gray-700 hover:text-blue-600 transition-colors">
+                      Base Knowledge
+                    </Link>
+                  </>
                 )}
                 <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-600">
                   <User className="h-4 w-4 mr-2" />
@@ -83,13 +88,22 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                   {userRole === "teacher" && (
-                    <Link 
-                      to="/upload" 
-                      className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Create Course
-                    </Link>
+                    <>
+                      <Link 
+                        to="/upload" 
+                        className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Create Course
+                      </Link>
+                      <Link 
+                        to="/base-knowledge" 
+                        className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Base Knowledge
+                      </Link>
+                    </>
                   )}
                   <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-600 w-fit">
                     <User className="h-4 w-4 mr-2" />
