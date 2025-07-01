@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { BookOpen, Menu, X, LogIn, User, LogOut, Database, Info } from "lucide-react";
+import { BookOpen, Menu, X, LogIn, User, LogOut, Database, Info, Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -12,9 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  
   // TODO: Replace with actual auth state
   const isAuthenticated = true; // Changed to true for demo
   const userRole: "student" | "teacher" = "teacher"; // Default to teacher
@@ -41,7 +44,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
@@ -56,11 +59,11 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
+                <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Dashboard
                 </Link>
                 {userRole === "teacher" && (
-                  <Link to="/upload" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <Link to="/upload" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     Create Course
                   </Link>
                 )}
@@ -102,6 +105,27 @@ const Navbar = () => {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
+                    
+                    {/* Theme Toggle */}
+                    <DropdownMenuItem className="cursor-pointer" onClick={(e) => e.preventDefault()}>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center">
+                          {theme === 'light' ? (
+                            <Sun className="mr-2 h-4 w-4" />
+                          ) : (
+                            <Moon className="mr-2 h-4 w-4" />
+                          )}
+                          <span>Theme</span>
+                        </div>
+                        <Switch
+                          checked={theme === 'dark'}
+                          onCheckedChange={toggleTheme}
+                          size="sm"
+                        />
+                      </div>
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer">
                       <Info className="mr-2 h-4 w-4" />
                       <span>App Version 1.0.0</span>
@@ -116,11 +140,11 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
+                <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Browse Courses
                 </Link>
                 <Button asChild variant="ghost" size="sm">
-                  <Link to="/auth" className="text-gray-700 hover:text-blue-600">
+                  <Link to="/auth" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                     <LogIn className="h-4 w-4 mr-2" />
                     Sign In
                   </Link>
@@ -146,7 +170,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
             <div className="flex flex-col space-y-4">
               {isAuthenticated ? (
                 <>
@@ -160,13 +184,13 @@ const Navbar = () => {
                     </Avatar>
                     <div>
                       <p className="text-sm font-medium">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
                     </div>
                   </div>
                   
                   <Link 
                     to="/dashboard" 
-                    className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Dashboard
@@ -174,7 +198,7 @@ const Navbar = () => {
                   {userRole === "teacher" && (
                     <Link 
                       to="/upload" 
-                      className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                      className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Create Course
@@ -183,7 +207,7 @@ const Navbar = () => {
                   
                   <Link 
                     to="/profile" 
-                    className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1 flex items-center"
+                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1 flex items-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <User className="h-4 w-4 mr-2" />
@@ -193,7 +217,7 @@ const Navbar = () => {
                   {userRole === "teacher" && (
                     <Link 
                       to="/base-knowledge" 
-                      className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1 flex items-center"
+                      className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1 flex items-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Database className="h-4 w-4 mr-2" />
@@ -201,7 +225,24 @@ const Navbar = () => {
                     </Link>
                   )}
                   
-                  <div className="text-gray-500 px-2 py-1 text-sm flex items-center">
+                  {/* Mobile Theme Toggle */}
+                  <div className="flex items-center justify-between px-2 py-1">
+                    <div className="flex items-center text-gray-700 dark:text-gray-300">
+                      {theme === 'light' ? (
+                        <Sun className="h-4 w-4 mr-2" />
+                      ) : (
+                        <Moon className="h-4 w-4 mr-2" />
+                      )}
+                      Theme
+                    </div>
+                    <Switch
+                      checked={theme === 'dark'}
+                      onCheckedChange={toggleTheme}
+                      size="sm"
+                    />
+                  </div>
+                  
+                  <div className="text-gray-500 dark:text-gray-400 px-2 py-1 text-sm flex items-center">
                     <Info className="h-4 w-4 mr-2" />
                     App Version 1.0.0
                   </div>
@@ -219,7 +260,7 @@ const Navbar = () => {
                 <>
                   <Link 
                     to="/dashboard" 
-                    className="text-gray-700 hover:text-blue-600 transition-colors px-2 py-1"
+                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Browse Courses
