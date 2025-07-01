@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, FileText, Loader2, CheckCircle, Database, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +17,7 @@ const UploadPage = () => {
   const [uploadComplete, setUploadComplete] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Mock data for base knowledge files
   const baseKnowledgeFiles = [
@@ -26,6 +26,14 @@ const UploadPage = () => {
     { id: "3", name: "Data Structures Notes.txt", size: "856 KB", uploadDate: "2024-01-25" },
     { id: "4", name: "Web Development Fundamentals.pdf", size: "3.1 MB", uploadDate: "2024-02-01" },
   ];
+
+  const handleFileSelection = (fileId: string) => {
+    setSelectedFiles(prev => 
+      prev.includes(fileId) 
+        ? prev.filter(id => id !== fileId)
+        : [...prev, fileId]
+    );
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -37,26 +45,17 @@ const UploadPage = () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     setIsUploading(false);
-    setIsProcessing(true);
-    
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    setIsProcessing(false);
     setUploadComplete(true);
     
     toast({
-      title: "Course Generated Successfully!",
-      description: "Your document has been processed and course content is ready.",
+      title: "Document Uploaded Successfully!",
+      description: "Ready to generate course content.",
     });
   };
 
-  const handleFileSelection = (fileId: string) => {
-    setSelectedFiles(prev => 
-      prev.includes(fileId) 
-        ? prev.filter(id => id !== fileId)
-        : [...prev, fileId]
-    );
+  const handleGenerateFromUpload = async () => {
+    // Redirect to course generation page with upload source
+    navigate(`/course-generation?source=upload&files=uploaded-document.pdf`);
   };
 
   const handleGenerateFromBaseKnowledge = async () => {
@@ -69,33 +68,14 @@ const UploadPage = () => {
       return;
     }
 
-    setIsProcessing(true);
-    
-    // Simulate course generation
-    await new Promise(resolve => setTimeout(resolve, 4000));
-    
-    setIsProcessing(false);
-    setUploadComplete(true);
-    
-    toast({
-      title: "Course Generated Successfully!",
-      description: `Course created using ${selectedFiles.length} file(s) from your base knowledge.`,
-    });
-  };
+    // Get selected file names for URL
+    const selectedFileNames = baseKnowledgeFiles
+      .filter(file => selectedFiles.includes(file.id))
+      .map(file => file.name)
+      .join(',');
 
-  const handleGenerate = async () => {
-    setIsProcessing(true);
-    
-    // Simulate course generation
-    await new Promise(resolve => setTimeout(resolve, 4000));
-    
-    setIsProcessing(false);
-    setUploadComplete(true);
-    
-    toast({
-      title: "Course Generated Successfully!",
-      description: "Your course and quiz have been created and are ready for review.",
-    });
+    // Redirect to course generation page with base knowledge source
+    navigate(`/course-generation?source=base-knowledge&files=${encodeURIComponent(selectedFileNames)}`);
   };
 
   return (
@@ -147,13 +127,6 @@ const UploadPage = () => {
                     <div className="flex items-center justify-center py-4">
                       <Loader2 className="h-6 w-6 animate-spin mr-2" />
                       <span>Uploading document...</span>
-                    </div>
-                  )}
-
-                  {isProcessing && (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                      <span>AI is processing your document...</span>
                     </div>
                   )}
 
@@ -222,32 +195,12 @@ const UploadPage = () => {
                   </div>
 
                   <Button 
-                    onClick={handleGenerate}
+                    onClick={handleGenerateFromUpload}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                    disabled={isProcessing}
+                    disabled={!uploadComplete}
                   >
-                    {isProcessing ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Generating Course...
-                      </>
-                    ) : (
-                      "Generate Course & Quiz"
-                    )}
+                    Generate Course & Quiz
                   </Button>
-
-                  {uploadComplete && (
-                    <div className="pt-4 border-t">
-                      <div className="flex gap-2">
-                        <Button asChild variant="outline" className="flex-1">
-                          <Link to="/dashboard">View Dashboard</Link>
-                        </Button>
-                        <Button asChild className="flex-1">
-                          <Link to="/course/1">Preview Course</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>
@@ -304,16 +257,9 @@ const UploadPage = () => {
                     <Button 
                       onClick={handleGenerateFromBaseKnowledge}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                      disabled={isProcessing || selectedFiles.length === 0}
+                      disabled={selectedFiles.length === 0}
                     >
-                      {isProcessing ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          Generating Course...
-                        </>
-                      ) : (
-                        "Generate Course from Selected Files"
-                      )}
+                      Generate Course from Selected Files
                     </Button>
                   </div>
                 </CardContent>
@@ -373,19 +319,6 @@ const UploadPage = () => {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {uploadComplete && (
-                    <div className="pt-4 border-t">
-                      <div className="flex gap-2">
-                        <Button asChild variant="outline" className="flex-1">
-                          <Link to="/dashboard">View Dashboard</Link>
-                        </Button>
-                        <Button asChild className="flex-1">
-                          <Link to="/course/1">Preview Course</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>
