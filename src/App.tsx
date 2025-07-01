@@ -12,6 +12,7 @@ import Course from "./pages/Course";
 import Quiz from "./pages/Quiz";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import CourseGeneration from "./pages/CourseGeneration";
 
 const queryClient = new QueryClient();
 
