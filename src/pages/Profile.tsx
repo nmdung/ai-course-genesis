@@ -6,12 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Shield, Moon, Sun } from "lucide-react";
+import { User, Mail, Shield, Moon, Sun, Globe } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Navbar from "@/components/Navbar";
 
 const Profile = () => {
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t } = useLanguage();
   
   // Mock user data - replace with actual user data from auth context
   const user = {
@@ -45,7 +47,7 @@ const Profile = () => {
           </Avatar>
           <div>
             <h1 className="text-3xl font-bold text-foreground">{user.name}</h1>
-            <p className="text-muted-foreground">Member since {user.joinDate}</p>
+            <p className="text-muted-foreground">{t('memberSince')} {user.joinDate}</p>
           </div>
         </div>
 
@@ -55,47 +57,47 @@ const Profile = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                Profile Information
+                {t('profileInformation')}
               </CardTitle>
               <CardDescription>
-                Update your personal information
+                {t('updatePersonalInfo')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">{t('fullName')}</Label>
                 <Input id="name" defaultValue={user.name} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <Input id="email" type="email" defaultValue={user.email} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">{t('role')}</Label>
                 <div className="flex items-center space-x-2">
                   <Shield className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm capitalize">{user.role}</span>
+                  <span className="text-sm capitalize">{t(user.role)}</span>
                 </div>
               </div>
-              <Button className="w-full">Save Changes</Button>
+              <Button className="w-full">{t('saveChanges')}</Button>
             </CardContent>
           </Card>
 
           {/* Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>Settings</CardTitle>
+              <CardTitle>{t('settings')}</CardTitle>
               <CardDescription>
-                Customize your experience
+                {t('customizeExperience')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Theme Toggle */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base">Theme</Label>
+                  <Label className="text-base">{t('theme')}</Label>
                   <div className="text-sm text-muted-foreground">
-                    Switch between light and dark mode
+                    {t('switchTheme')}
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -110,12 +112,31 @@ const Profile = () => {
 
               <Separator />
 
+              {/* Language Toggle */}
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">{t('language')}</Label>
+                  <div className="text-sm text-muted-foreground">
+                    Tiếng Việt / English
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Globe className="h-4 w-4" />
+                  <Switch
+                    checked={language === 'en'}
+                    onCheckedChange={toggleLanguage}
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
               {/* Notifications */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base">Email Notifications</Label>
+                  <Label className="text-base">{t('emailNotifications')}</Label>
                   <div className="text-sm text-muted-foreground">
-                    Receive updates about your courses
+                    {t('receiveUpdates')}
                   </div>
                 </div>
                 <Switch defaultChecked />
@@ -126,9 +147,9 @@ const Profile = () => {
               {/* Marketing */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base">Marketing Emails</Label>
+                  <Label className="text-base">{t('marketingEmails')}</Label>
                   <div className="text-sm text-muted-foreground">
-                    Receive news and updates
+                    {t('receiveNews')}
                   </div>
                 </div>
                 <Switch />
@@ -140,14 +161,14 @@ const Profile = () => {
         {/* Account Actions */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-destructive">Danger Zone</CardTitle>
+            <CardTitle className="text-destructive">{t('dangerZone')}</CardTitle>
             <CardDescription>
-              Irreversible actions that will affect your account
+              {t('irreversibleActions')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="destructive" className="w-full">
-              Delete Account
+              {t('deleteAccount')}
             </Button>
           </CardContent>
         </Card>

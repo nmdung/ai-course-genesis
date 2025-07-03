@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import { BookOpen, Menu, X, LogIn, User, LogOut, Database, Info, Moon, Sun } from "lucide-react";
+import { BookOpen, Menu, X, LogIn, User, LogOut, Database, Info, Moon, Sun, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -13,10 +14,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t } = useLanguage();
   
   // TODO: Replace with actual auth state
   const isAuthenticated = true; // Changed to true for demo
@@ -60,11 +63,11 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  Dashboard
+                  {t('dashboard')}
                 </Link>
                 {userRole === "teacher" && (
                   <Link to="/upload" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                    Create Course
+                    {t('createCourse')}
                   </Link>
                 )}
                 
@@ -93,14 +96,14 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="w-full cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                        <span>{t('profile')}</span>
                       </Link>
                     </DropdownMenuItem>
                     {userRole === "teacher" && (
                       <DropdownMenuItem asChild>
                         <Link to="/base-knowledge" className="w-full cursor-pointer">
                           <Database className="mr-2 h-4 w-4" />
-                          <span>Base Knowledge</span>
+                          <span>{t('baseKnowledge')}</span>
                         </Link>
                       </DropdownMenuItem>
                     )}
@@ -115,12 +118,25 @@ const Navbar = () => {
                           ) : (
                             <Moon className="mr-2 h-4 w-4" />
                           )}
-                          <span>Theme</span>
+                          <span>{t('theme')}</span>
                         </div>
                         <Switch
                           checked={theme === 'dark'}
                           onCheckedChange={toggleTheme}
-                          size="sm"
+                        />
+                      </div>
+                    </DropdownMenuItem>
+                    
+                    {/* Language Toggle */}
+                    <DropdownMenuItem className="cursor-pointer" onClick={(e) => e.preventDefault()}>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center">
+                          <Globe className="mr-2 h-4 w-4" />
+                          <span>{t('language')}</span>
+                        </div>
+                        <Switch
+                          checked={language === 'en'}
+                          onCheckedChange={toggleLanguage}
                         />
                       </div>
                     </DropdownMenuItem>
@@ -128,12 +144,12 @@ const Navbar = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer">
                       <Info className="mr-2 h-4 w-4" />
-                      <span>App Version 1.0.0</span>
+                      <span>{t('appVersion')}</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
+                      <span>{t('logout')}</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -141,16 +157,16 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  Browse Courses
+                  {t('browseCourses')}
                 </Link>
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/auth" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                     <LogIn className="h-4 w-4 mr-2" />
-                    Sign In
+                    {t('signIn')}
                   </Link>
                 </Button>
                 <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  <Link to="/auth">Get Started</Link>
+                  <Link to="/auth">{t('getStarted')}</Link>
                 </Button>
               </>
             )}
@@ -193,7 +209,7 @@ const Navbar = () => {
                     className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                   {userRole === "teacher" && (
                     <Link 
@@ -201,7 +217,7 @@ const Navbar = () => {
                       className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Create Course
+                      {t('createCourse')}
                     </Link>
                   )}
                   
@@ -211,7 +227,7 @@ const Navbar = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <User className="h-4 w-4 mr-2" />
-                    Profile
+                    {t('profile')}
                   </Link>
                   
                   {userRole === "teacher" && (
@@ -221,7 +237,7 @@ const Navbar = () => {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Database className="h-4 w-4 mr-2" />
-                      Base Knowledge
+                      {t('baseKnowledge')}
                     </Link>
                   )}
                   
@@ -233,18 +249,29 @@ const Navbar = () => {
                       ) : (
                         <Moon className="h-4 w-4 mr-2" />
                       )}
-                      Theme
+                      {t('theme')}
                     </div>
                     <Switch
                       checked={theme === 'dark'}
                       onCheckedChange={toggleTheme}
-                      size="sm"
+                    />
+                  </div>
+                  
+                  {/* Mobile Language Toggle */}
+                  <div className="flex items-center justify-between px-2 py-1">
+                    <div className="flex items-center text-gray-700 dark:text-gray-300">
+                      <Globe className="h-4 w-4 mr-2" />
+                      {t('language')}
+                    </div>
+                    <Switch
+                      checked={language === 'en'}
+                      onCheckedChange={toggleLanguage}
                     />
                   </div>
                   
                   <div className="text-gray-500 dark:text-gray-400 px-2 py-1 text-sm flex items-center">
                     <Info className="h-4 w-4 mr-2" />
-                    App Version 1.0.0
+                    {t('appVersion')}
                   </div>
                   
                   <Button 
@@ -253,7 +280,7 @@ const Navbar = () => {
                     className="text-red-600 hover:text-red-600 w-fit flex items-center"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    Log out
+                    {t('logout')}
                   </Button>
                 </>
               ) : (
@@ -263,16 +290,16 @@ const Navbar = () => {
                     className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Browse Courses
+                    {t('browseCourses')}
                   </Link>
                   <Button asChild variant="ghost" size="sm" className="w-fit">
                     <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                       <LogIn className="h-4 w-4 mr-2" />
-                      Sign In
+                      {t('signIn')}
                     </Link>
                   </Button>
                   <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 w-fit">
-                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>{t('getStarted')}</Link>
                   </Button>
                 </>
               )}
