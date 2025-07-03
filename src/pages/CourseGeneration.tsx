@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, CheckCircle, Edit3, Eye } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import CoursePlanPreview from "@/components/course-generation/CoursePlanPreview";
 import ChapterPreview from "@/components/course-generation/ChapterPreview";
 import CourseSettings from "@/components/course-generation/CourseSettings";
@@ -125,108 +125,146 @@ const CourseGeneration = () => {
     }
   };
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": courseData.title,
+    "description": courseData.description,
+    "provider": {
+      "@type": "Organization",
+      "name": "AI Course Genesis"
+    },
+    "courseMode": "online",
+    "educationalLevel": courseData.difficulty,
+    "timeRequired": courseData.estimatedDuration,
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online",
+      "instructor": {
+        "@type": "Person",
+        "name": "AI Course Generator"
+      }
+    }
+  };
+
   if (isGenerating) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <Navbar />
-        <div className="max-w-4xl mx-auto px-4 py-16">
-          <Card className="bg-white/70 backdrop-blur-sm border-0">
-            <CardContent className="p-8">
-              <div className="text-center space-y-6">
-                <Loader2 className="h-16 w-16 animate-spin mx-auto text-blue-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Generating Your Course</h2>
-                <p className="text-gray-600">
-                  AI is analyzing your {sourceType === "upload" ? "uploaded document" : "selected files"} and creating a comprehensive course structure...
-                </p>
-                <div className="space-y-2">
-                  <div className="text-sm text-gray-500">Processing: {sourceFiles}</div>
-                  <Progress value={75} className="h-2" />
+      <>
+        <SEO
+          title="Generating Course - AI Course Genesis"
+          description="AI is analyzing your content and creating a comprehensive course structure..."
+          keywords="AI course generation, automated course creation, e-learning AI"
+        />
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+          <Navbar />
+          <div className="max-w-4xl mx-auto px-4 py-16">
+            <Card className="bg-white/70 backdrop-blur-sm border-0">
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  <Loader2 className="h-16 w-16 animate-spin mx-auto text-blue-600" />
+                  <h2 className="text-2xl font-bold text-gray-900">Generating Your Course</h2>
+                  <p className="text-gray-600">
+                    AI is analyzing your {sourceType === "upload" ? "uploaded document" : "selected files"} and creating a comprehensive course structure...
+                  </p>
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-500">Processing: {sourceFiles}</div>
+                    <Progress value={75} className="h-2" />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navbar />
+    <>
+      <SEO
+        title={`Course Generation: ${courseData.title} - AI Course Genesis`}
+        description={`Creating "${courseData.title}" - ${courseData.description}`}
+        keywords="course generation, AI course creation, educational content, course planning"
+        structuredData={structuredData}
+      />
       
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Progress Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">Course Generation</h1>
-            <Badge variant="outline" className="px-3 py-1">
-              {currentStep === "planning" && "Planning"}
-              {currentStep === "preview" && `Chapter ${currentChapterIndex + 1} of ${courseData.chapters.length}`}
-              {currentStep === "settings" && "Settings"}
-              {currentStep === "complete" && "Complete"}
-            </Badge>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <Navbar />
+        
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Progress Header */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-3xl font-bold text-gray-900">Course Generation</h1>
+              <Badge variant="outline" className="px-3 py-1">
+                {currentStep === "planning" && "Planning"}
+                {currentStep === "preview" && `Chapter ${currentChapterIndex + 1} of ${courseData.chapters.length}`}
+                {currentStep === "settings" && "Settings"}
+                {currentStep === "complete" && "Complete"}
+              </Badge>
+            </div>
+            <Progress value={getStepProgress()} className="h-2" />
           </div>
-          <Progress value={getStepProgress()} className="h-2" />
-        </div>
 
-        {/* Step Content */}
-        {currentStep === "planning" && (
-          <CoursePlanPreview 
-            courseData={courseData}
-            onApprove={handleApprovePlan}
-            onEdit={(field, value) => setCourseData(prev => ({ ...prev, [field]: value }))}
-          />
-        )}
+          {/* Step Content */}
+          {currentStep === "planning" && (
+            <CoursePlanPreview 
+              courseData={courseData}
+              onApprove={handleApprovePlan}
+              onEdit={(field, value) => setCourseData(prev => ({ ...prev, [field]: value }))}
+            />
+          )}
 
-        {currentStep === "preview" && (
-          <ChapterPreview
-            chapter={courseData.chapters[currentChapterIndex]}
-            chapterIndex={currentChapterIndex}
-            totalChapters={courseData.chapters.length}
-            onApprove={handleApproveChapter}
-            onEdit={handleEditChapter}
-            onPrevious={handlePreviousChapter}
-            canGoBack={currentChapterIndex > 0}
-          />
-        )}
+          {currentStep === "preview" && (
+            <ChapterPreview
+              chapter={courseData.chapters[currentChapterIndex]}
+              chapterIndex={currentChapterIndex}
+              totalChapters={courseData.chapters.length}
+              onApprove={handleApproveChapter}
+              onEdit={handleEditChapter}
+              onPrevious={handlePreviousChapter}
+              canGoBack={currentChapterIndex > 0}
+            />
+          )}
 
-        {currentStep === "settings" && (
-          <CourseSettings
-            courseData={courseData}
-            onFinalize={handleFinalizeCourse}
-          />
-        )}
+          {currentStep === "settings" && (
+            <CourseSettings
+              courseData={courseData}
+              onFinalize={handleFinalizeCourse}
+            />
+          )}
 
-        {currentStep === "complete" && (
-          <Card className="bg-white/70 backdrop-blur-sm border-0">
-            <CardContent className="p-8">
-              <div className="text-center space-y-6">
-                <CheckCircle className="h-16 w-16 text-green-600 mx-auto" />
-                <h2 className="text-2xl font-bold text-gray-900">Course Created Successfully!</h2>
-                <p className="text-gray-600">
-                  Your course "{courseData.title}" has been generated and is ready for students.
-                </p>
-                <div className="flex gap-4 justify-center">
-                  <Button 
-                    onClick={() => navigate("/dashboard")}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  >
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Course
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Back to Dashboard
-                  </Button>
+          {currentStep === "complete" && (
+            <Card className="bg-white/70 backdrop-blur-sm border-0">
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  <CheckCircle className="h-16 w-16 text-green-600 mx-auto" />
+                  <h2 className="text-2xl font-bold text-gray-900">Course Created Successfully!</h2>
+                  <p className="text-gray-600">
+                    Your course "{courseData.title}" has been generated and is ready for students.
+                  </p>
+                  <div className="flex gap-4 justify-center">
+                    <Button 
+                      onClick={() => navigate("/dashboard")}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Course
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Back to Dashboard
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
