@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export interface AuthFormData {
   email: string;
@@ -24,6 +25,7 @@ export const useAuth = () => {
     confirmPassword: ""
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleInputChange = (field: keyof AuthFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -74,8 +76,8 @@ export const useAuth = () => {
         
         if (error) throw error;
         
-        setVerificationEmail(formData.email);
-        setShowEmailVerification(true);
+        // Redirect to email verification page with email parameter
+        navigate(`/email-verification?email=${encodeURIComponent(formData.email)}`);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
