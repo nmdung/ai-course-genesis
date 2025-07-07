@@ -19,7 +19,7 @@ export const useSEO = (seoData: SEOData) => {
     }
 
     // Update or create meta tags
-    const updateMetaTag = (name: string, content: string, property?: string) => {
+    const updateMetaTag = (name: string, content: string, property?: boolean) => {
       const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
       let meta = document.querySelector(selector) as HTMLMetaElement;
       
