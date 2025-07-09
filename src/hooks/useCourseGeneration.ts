@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-type GenerationStep = "describe" | "planning" | "preview" | "settings" | "complete";
+type GenerationStep = "describe" | "source" | "planning" | "preview" | "settings" | "complete";
 
 interface Chapter {
   id: number;
@@ -28,6 +28,8 @@ export const useCourseGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [courseDescription, setCourseDescription] = useState("");
+  const [sourceType, setSourceType] = useState<string>("");
+  const [sourceFiles, setSourceFiles] = useState<string>("");
   
   // Mock course data that would come from AI
   const [courseData, setCourseData] = useState<CourseData>({
@@ -73,6 +75,12 @@ export const useCourseGeneration = () => {
       return;
     }
     
+    setCurrentStep("source");
+  };
+
+  const handleSourceNext = (type: string, files: string) => {
+    setSourceType(type);
+    setSourceFiles(files);
     setCurrentStep("planning");
     setIsGenerating(true);
     
@@ -84,6 +92,10 @@ export const useCourseGeneration = () => {
         description: "Review the course structure and approve each chapter.",
       });
     }, 3000);
+  };
+
+  const handleSourceBack = () => {
+    setCurrentStep("describe");
   };
 
   const handleApprovePlan = () => {
@@ -130,10 +142,14 @@ export const useCourseGeneration = () => {
     isGenerating,
     currentChapterIndex,
     courseDescription,
+    sourceType,
+    sourceFiles,
     courseData,
     setCourseDescription,
     setCourseData,
     handleDescribeNext,
+    handleSourceNext,
+    handleSourceBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,

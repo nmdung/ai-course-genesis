@@ -7,6 +7,7 @@ import CoursePlanPreview from "@/components/course-generation/CoursePlanPreview"
 import ChapterPreview from "@/components/course-generation/ChapterPreview";
 import CourseSettings from "@/components/course-generation/CourseSettings";
 import CourseDescriptionStep from "@/components/course-generation/CourseDescriptionStep";
+import CourseSourceStep from "@/components/course-generation/CourseSourceStep";
 import CourseCompleteStep from "@/components/course-generation/CourseCompleteStep";
 import CourseGenerationProgress from "@/components/course-generation/CourseGenerationProgress";
 import CourseGenerationLoading from "@/components/course-generation/CourseGenerationLoading";
@@ -21,19 +22,20 @@ const CourseGeneration = () => {
     isGenerating,
     currentChapterIndex,
     courseDescription,
+    sourceType,
+    sourceFiles,
     courseData,
     setCourseDescription,
     setCourseData,
     handleDescribeNext,
+    handleSourceNext,
+    handleSourceBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,
     handlePreviousChapter,
     handleFinalizeCourse
   } = useCourseGeneration();
-
-  const sourceType = searchParams.get("source"); // "upload" or "base-knowledge"
-  const sourceFiles = searchParams.get("files"); // file names or IDs
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -85,9 +87,16 @@ const CourseGeneration = () => {
             <CourseDescriptionStep
               courseDescription={courseDescription}
               setCourseDescription={setCourseDescription}
-              sourceType={sourceType}
-              sourceFiles={sourceFiles}
+              sourceType={null}
+              sourceFiles={null}
               onNext={handleDescribeNext}
+            />
+          )}
+
+          {currentStep === "source" && (
+            <CourseSourceStep
+              onNext={handleSourceNext}
+              onBack={handleSourceBack}
             />
           )}
 

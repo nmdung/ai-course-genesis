@@ -17,8 +17,6 @@ interface CourseDescriptionStepProps {
 const CourseDescriptionStep = ({
   courseDescription,
   setCourseDescription,
-  sourceType,
-  sourceFiles,
   onNext
 }: CourseDescriptionStepProps) => {
   return (
@@ -47,15 +45,6 @@ const CourseDescriptionStep = ({
             className="min-h-[200px] resize-none"
           />
         </div>
-        
-        {sourceType && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">Source Material</h3>
-            <p className="text-sm text-blue-700">
-              Using {sourceType === "upload" ? "uploaded document" : "base knowledge"}: {sourceFiles}
-            </p>
-          </div>
-        )}
 
         <div className="flex justify-end">
           <Button 
@@ -63,7 +52,7 @@ const CourseDescriptionStep = ({
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             disabled={!courseDescription.trim()}
           >
-            Generate Course Plan
+            Next: Choose Source Material
           </Button>
         </div>
       </CardContent>
