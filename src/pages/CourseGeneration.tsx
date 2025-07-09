@@ -4,7 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle, Edit3, Eye } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Loader2, CheckCircle, Edit3, Eye, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import CoursePlanPreview from "@/components/course-generation/CoursePlanPreview";
@@ -12,16 +15,17 @@ import ChapterPreview from "@/components/course-generation/ChapterPreview";
 import CourseSettings from "@/components/course-generation/CourseSettings";
 import { useToast } from "@/hooks/use-toast";
 
-type GenerationStep = "planning" | "preview" | "settings" | "complete";
+type GenerationStep = "describe" | "planning" | "preview" | "settings" | "complete";
 
 const CourseGeneration = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [currentStep, setCurrentStep] = useState<GenerationStep>("planning");
-  const [isGenerating, setIsGenerating] = useState(true);
+  const [currentStep, setCurrentStep] = useState<GenerationStep>("describe");
+  const [isGenerating, setIsGenerating] = useState(false);
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [courseDescription, setCourseDescription] = useState("");
   
   // Mock course data that would come from AI
   const [courseData, setCourseData] = useState({
@@ -60,21 +64,28 @@ const CourseGeneration = () => {
   const sourceType = searchParams.get("source"); // "upload" or "base-knowledge"
   const sourceFiles = searchParams.get("files"); // file names or IDs
 
-  useEffect(() => {
+  const handleDescribeNext = () => {
+    if (!courseDescription.trim()) {
+      toast({
+        title: "Description Required",
+        description: "Please describe your course before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setCurrentStep("planning");
+    setIsGenerating(true);
+    
     // Simulate AI course generation
-    const generateCourse = async () => {
-      await new Promise(resolve => setTimeout(resolve, 3000));
+    setTimeout(() => {
       setIsGenerating(false);
       toast({
         title: "Course Plan Generated!",
         description: "Review the course structure and approve each chapter.",
       });
-    };
-
-    if (isGenerating) {
-      generateCourse();
-    }
-  }, [isGenerating, toast]);
+    }, 3000);
+  };
 
   const handleApprovePlan = () => {
     setCurrentStep("preview");
@@ -117,11 +128,23 @@ const CourseGeneration = () => {
 
   const getStepProgress = () => {
     switch (currentStep) {
+      case "describe": return 10;
       case "planning": return 25;
       case "preview": return 50 + (currentChapterIndex / courseData.chapters.length) * 25;
       case "settings": return 90;
       case "complete": return 100;
       default: return 0;
+    }
+  };
+
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case "describe": return "Step 1 of 4: Describe Your Course";
+      case "planning": return "Step 2 of 4: Planning";
+      case "preview": return `Step 3 of 4: Chapter ${currentChapterIndex + 1} of ${courseData.chapters.length}`;
+      case "settings": return "Step 4 of 4: Settings";
+      case "complete": return "Complete";
+      default: return "";
     }
   };
 
@@ -164,10 +187,10 @@ const CourseGeneration = () => {
                   <Loader2 className="h-16 w-16 animate-spin mx-auto text-blue-600" />
                   <h2 className="text-2xl font-bold text-gray-900">Generating Your Course</h2>
                   <p className="text-gray-600">
-                    AI is analyzing your {sourceType === "upload" ? "uploaded document" : "selected files"} and creating a comprehensive course structure...
+                    AI is analyzing your description and creating a comprehensive course structure...
                   </p>
                   <div className="space-y-2">
-                    <div className="text-sm text-gray-500">Processing: {sourceFiles}</div>
+                    <div className="text-sm text-gray-500">Processing your course description</div>
                     <Progress value={75} className="h-2" />
                   </div>
                 </div>
@@ -180,7 +203,7 @@ const CourseGeneration = () => {
   }
 
   return (
-    <>
+    <TooltipProvider>
       <SEO
         title={`Course Generation: ${courseData.title} - AI Course Genesis`}
         description={`Creating "${courseData.title}" - ${courseData.description}`}
@@ -197,16 +220,62 @@ const CourseGeneration = () => {
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-3xl font-bold text-gray-900">Course Generation</h1>
               <Badge variant="outline" className="px-3 py-1">
-                {currentStep === "planning" && "Planning"}
-                {currentStep === "preview" && `Chapter ${currentChapterIndex + 1} of ${courseData.chapters.length}`}
-                {currentStep === "settings" && "Settings"}
-                {currentStep === "complete" && "Complete"}
+                {getStepTitle()}
               </Badge>
             </div>
             <Progress value={getStepProgress()} className="h-2" />
           </div>
 
           {/* Step Content */}
+          {currentStep === "describe" && (
+            <Card className="bg-white/70 backdrop-blur-sm border-0">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-2xl">Describe Your Course</CardTitle>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-5 w-5 text-gray-500" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm">
+                      <p>Describe the course you'd like us to build. You can keep it simple or write pages of instructions including tone of voice, style and notes on the structure.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="course-description">Course Description</Label>
+                  <Textarea
+                    id="course-description"
+                    placeholder="Describe your course in detail. What should students learn? What's the target audience? Any specific requirements or structure you have in mind?"
+                    value={courseDescription}
+                    onChange={(e) => setCourseDescription(e.target.value)}
+                    className="min-h-[200px] resize-none"
+                  />
+                </div>
+                
+                {sourceType && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-medium text-blue-900 mb-2">Source Material</h3>
+                    <p className="text-sm text-blue-700">
+                      Using {sourceType === "upload" ? "uploaded document" : "base knowledge"}: {sourceFiles}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <Button 
+                    onClick={handleDescribeNext}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    disabled={!courseDescription.trim()}
+                  >
+                    Generate Course Plan
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {currentStep === "planning" && (
             <CoursePlanPreview 
               courseData={courseData}
@@ -264,7 +333,7 @@ const CourseGeneration = () => {
           )}
         </div>
       </div>
-    </>
+    </TooltipProvider>
   );
 };
 
