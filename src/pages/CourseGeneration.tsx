@@ -1,4 +1,3 @@
-
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
@@ -9,6 +8,7 @@ import CourseSettings from "@/components/course-generation/CourseSettings";
 import CourseDescriptionStep from "@/components/course-generation/CourseDescriptionStep";
 import CourseSourceStep from "@/components/course-generation/CourseSourceStep";
 import CourseTargetAudienceStep from "@/components/course-generation/CourseTargetAudienceStep";
+import CourseStructureStep from "@/components/course-generation/CourseStructureStep";
 import CourseCompleteStep from "@/components/course-generation/CourseCompleteStep";
 import CourseGenerationProgress from "@/components/course-generation/CourseGenerationProgress";
 import CourseGenerationLoading from "@/components/course-generation/CourseGenerationLoading";
@@ -26,15 +26,19 @@ const CourseGeneration = () => {
     targetAudience,
     sourceType,
     sourceFiles,
+    courseStructure,
     courseData,
     setCourseDescription,
     setTargetAudience,
+    setCourseStructure,
     setCourseData,
     handleDescribeNext,
     handleSourceNext,
     handleSourceBack,
     handleLearnerNext,
     handleLearnerBack,
+    handleStructureNext,
+    handleStructureBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,
@@ -111,6 +115,15 @@ const CourseGeneration = () => {
               setTargetAudience={setTargetAudience}
               onNext={handleLearnerNext}
               onBack={handleLearnerBack}
+            />
+          )}
+
+          {currentStep === "structure" && (
+            <CourseStructureStep
+              courseStructure={courseStructure}
+              setCourseStructure={setCourseStructure}
+              onNext={handleStructureNext}
+              onBack={handleStructureBack}
             />
           )}
 

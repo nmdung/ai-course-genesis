@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-type GenerationStep = "describe" | "source" | "learner" | "planning" | "preview" | "settings" | "complete";
+type GenerationStep = "describe" | "source" | "learner" | "structure" | "planning" | "preview" | "settings" | "complete";
 
 interface Chapter {
   id: number;
@@ -21,6 +20,15 @@ interface CourseData {
   chapters: Chapter[];
 }
 
+interface CourseStructure {
+  sections: number;
+  pagesPerSection: number;
+  quizzesPerSection: number;
+  questionsPerQuiz: number;
+  courseSummary: boolean;
+  generateAIImages: boolean;
+}
+
 export const useCourseGeneration = () => {
   const { toast } = useToast();
   
@@ -31,8 +39,15 @@ export const useCourseGeneration = () => {
   const [targetAudience, setTargetAudience] = useState("");
   const [sourceType, setSourceType] = useState<string>("");
   const [sourceFiles, setSourceFiles] = useState<string>("");
+  const [courseStructure, setCourseStructure] = useState<CourseStructure>({
+    sections: 3,
+    pagesPerSection: 1,
+    quizzesPerSection: 1,
+    questionsPerQuiz: 1,
+    courseSummary: true,
+    generateAIImages: false
+  });
   
-  // Mock course data that would come from AI
   const [courseData, setCourseData] = useState<CourseData>({
     title: "Introduction to Machine Learning",
     description: "A comprehensive course covering ML fundamentals, algorithms, and practical applications.",
@@ -99,6 +114,14 @@ export const useCourseGeneration = () => {
       return;
     }
     
+    setCurrentStep("structure");
+  };
+
+  const handleLearnerBack = () => {
+    setCurrentStep("source");
+  };
+
+  const handleStructureNext = () => {
     setCurrentStep("planning");
     setIsGenerating(true);
     
@@ -112,8 +135,8 @@ export const useCourseGeneration = () => {
     }, 3000);
   };
 
-  const handleLearnerBack = () => {
-    setCurrentStep("source");
+  const handleStructureBack = () => {
+    setCurrentStep("learner");
   };
 
   const handleApprovePlan = () => {
@@ -163,15 +186,19 @@ export const useCourseGeneration = () => {
     targetAudience,
     sourceType,
     sourceFiles,
+    courseStructure,
     courseData,
     setCourseDescription,
     setTargetAudience,
+    setCourseStructure,
     setCourseData,
     handleDescribeNext,
     handleSourceNext,
     handleSourceBack,
     handleLearnerNext,
     handleLearnerBack,
+    handleStructureNext,
+    handleStructureBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,

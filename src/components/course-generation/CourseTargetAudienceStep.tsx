@@ -60,7 +60,7 @@ const CourseTargetAudienceStep = ({
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             disabled={!targetAudience.trim()}
           >
-            Next: Planning
+            Next: Course Structure
           </Button>
         </div>
       </CardContent>
