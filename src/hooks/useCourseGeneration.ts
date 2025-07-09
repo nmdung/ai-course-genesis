@@ -1,0 +1,143 @@
+
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+
+type GenerationStep = "describe" | "planning" | "preview" | "settings" | "complete";
+
+interface Chapter {
+  id: number;
+  title: string;
+  summary: string;
+  content: string;
+  estimatedTime: string;
+  approved: boolean;
+}
+
+interface CourseData {
+  title: string;
+  description: string;
+  difficulty: string;
+  estimatedDuration: string;
+  chapters: Chapter[];
+}
+
+export const useCourseGeneration = () => {
+  const { toast } = useToast();
+  
+  const [currentStep, setCurrentStep] = useState<GenerationStep>("describe");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [courseDescription, setCourseDescription] = useState("");
+  
+  // Mock course data that would come from AI
+  const [courseData, setCourseData] = useState<CourseData>({
+    title: "Introduction to Machine Learning",
+    description: "A comprehensive course covering ML fundamentals, algorithms, and practical applications.",
+    difficulty: "intermediate",
+    estimatedDuration: "8 hours",
+    chapters: [
+      {
+        id: 1,
+        title: "What is Machine Learning?",
+        summary: "Introduction to machine learning concepts, types, and applications in modern technology.",
+        content: "Machine learning is a subset of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed...",
+        estimatedTime: "45 minutes",
+        approved: false
+      },
+      {
+        id: 2,
+        title: "Supervised Learning",
+        summary: "Understanding supervised learning algorithms including regression and classification techniques.",
+        content: "Supervised learning uses labeled training data to learn a mapping function from input variables to output variables...",
+        estimatedTime: "90 minutes",
+        approved: false
+      },
+      {
+        id: 3,
+        title: "Unsupervised Learning",
+        summary: "Exploring clustering, dimensionality reduction, and pattern recognition without labeled data.",
+        content: "Unsupervised learning finds hidden patterns in data without using labeled examples...",
+        estimatedTime: "75 minutes",
+        approved: false
+      }
+    ]
+  });
+
+  const handleDescribeNext = () => {
+    if (!courseDescription.trim()) {
+      toast({
+        title: "Description Required",
+        description: "Please describe your course before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setCurrentStep("planning");
+    setIsGenerating(true);
+    
+    // Simulate AI course generation
+    setTimeout(() => {
+      setIsGenerating(false);
+      toast({
+        title: "Course Plan Generated!",
+        description: "Review the course structure and approve each chapter.",
+      });
+    }, 3000);
+  };
+
+  const handleApprovePlan = () => {
+    setCurrentStep("preview");
+  };
+
+  const handleApproveChapter = () => {
+    const updatedChapters = [...courseData.chapters];
+    updatedChapters[currentChapterIndex].approved = true;
+    setCourseData(prev => ({ ...prev, chapters: updatedChapters }));
+
+    if (currentChapterIndex < courseData.chapters.length - 1) {
+      setCurrentChapterIndex(prev => prev + 1);
+    } else {
+      setCurrentStep("settings");
+    }
+  };
+
+  const handleEditChapter = () => {
+    // TODO: Open chapter editor
+    toast({
+      title: "Chapter Editor",
+      description: "Chapter editing functionality will be available soon.",
+    });
+  };
+
+  const handlePreviousChapter = () => {
+    if (currentChapterIndex > 0) {
+      setCurrentChapterIndex(prev => prev - 1);
+    }
+  };
+
+  const handleFinalizeCourse = (settings: any) => {
+    // TODO: Save course with settings
+    setCurrentStep("complete");
+    toast({
+      title: "Course Created Successfully!",
+      description: "Your course has been generated and is ready for students.",
+    });
+  };
+
+  return {
+    currentStep,
+    isGenerating,
+    currentChapterIndex,
+    courseDescription,
+    courseData,
+    setCourseDescription,
+    setCourseData,
+    handleDescribeNext,
+    handleApprovePlan,
+    handleApproveChapter,
+    handleEditChapter,
+    handlePreviousChapter,
+    handleFinalizeCourse
+  };
+};
