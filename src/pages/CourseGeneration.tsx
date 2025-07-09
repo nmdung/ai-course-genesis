@@ -8,6 +8,7 @@ import ChapterPreview from "@/components/course-generation/ChapterPreview";
 import CourseSettings from "@/components/course-generation/CourseSettings";
 import CourseDescriptionStep from "@/components/course-generation/CourseDescriptionStep";
 import CourseSourceStep from "@/components/course-generation/CourseSourceStep";
+import CourseTargetAudienceStep from "@/components/course-generation/CourseTargetAudienceStep";
 import CourseCompleteStep from "@/components/course-generation/CourseCompleteStep";
 import CourseGenerationProgress from "@/components/course-generation/CourseGenerationProgress";
 import CourseGenerationLoading from "@/components/course-generation/CourseGenerationLoading";
@@ -22,14 +23,18 @@ const CourseGeneration = () => {
     isGenerating,
     currentChapterIndex,
     courseDescription,
+    targetAudience,
     sourceType,
     sourceFiles,
     courseData,
     setCourseDescription,
+    setTargetAudience,
     setCourseData,
     handleDescribeNext,
     handleSourceNext,
     handleSourceBack,
+    handleLearnerNext,
+    handleLearnerBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,
@@ -97,6 +102,15 @@ const CourseGeneration = () => {
             <CourseSourceStep
               onNext={handleSourceNext}
               onBack={handleSourceBack}
+            />
+          )}
+
+          {currentStep === "learner" && (
+            <CourseTargetAudienceStep
+              targetAudience={targetAudience}
+              setTargetAudience={setTargetAudience}
+              onNext={handleLearnerNext}
+              onBack={handleLearnerBack}
             />
           )}
 

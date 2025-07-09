@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-type GenerationStep = "describe" | "source" | "planning" | "preview" | "settings" | "complete";
+type GenerationStep = "describe" | "source" | "learner" | "planning" | "preview" | "settings" | "complete";
 
 interface Chapter {
   id: number;
@@ -28,6 +28,7 @@ export const useCourseGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [courseDescription, setCourseDescription] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
   const [sourceType, setSourceType] = useState<string>("");
   const [sourceFiles, setSourceFiles] = useState<string>("");
   
@@ -81,6 +82,23 @@ export const useCourseGeneration = () => {
   const handleSourceNext = (type: string, files: string) => {
     setSourceType(type);
     setSourceFiles(files);
+    setCurrentStep("learner");
+  };
+
+  const handleSourceBack = () => {
+    setCurrentStep("describe");
+  };
+
+  const handleLearnerNext = () => {
+    if (!targetAudience.trim()) {
+      toast({
+        title: "Target Audience Required",
+        description: "Please describe your target learner before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setCurrentStep("planning");
     setIsGenerating(true);
     
@@ -94,8 +112,8 @@ export const useCourseGeneration = () => {
     }, 3000);
   };
 
-  const handleSourceBack = () => {
-    setCurrentStep("describe");
+  const handleLearnerBack = () => {
+    setCurrentStep("source");
   };
 
   const handleApprovePlan = () => {
@@ -142,14 +160,18 @@ export const useCourseGeneration = () => {
     isGenerating,
     currentChapterIndex,
     courseDescription,
+    targetAudience,
     sourceType,
     sourceFiles,
     courseData,
     setCourseDescription,
+    setTargetAudience,
     setCourseData,
     handleDescribeNext,
     handleSourceNext,
     handleSourceBack,
+    handleLearnerNext,
+    handleLearnerBack,
     handleApprovePlan,
     handleApproveChapter,
     handleEditChapter,
