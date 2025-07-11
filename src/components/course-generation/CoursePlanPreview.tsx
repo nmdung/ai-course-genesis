@@ -71,7 +71,7 @@ const CoursePlanPreview = ({ courseData, onApprove, onEdit }: CoursePlanPreviewP
 
   return (
     <div className="space-y-6">
-      {/* Course Overview */}
+      {/* Course Overview - Combined Section */}
       <Card className="bg-white/70 backdrop-blur-sm border-0">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -87,138 +87,141 @@ const CoursePlanPreview = ({ courseData, onApprove, onEdit }: CoursePlanPreviewP
             {isEditing ? "Cancel" : "Edit"}
           </Button>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {isEditing ? (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">Course Title</label>
-                <Input
-                  value={editedData.title}
-                  onChange={(e) => setEditedData(prev => ({ ...prev, title: e.target.value }))}
-                />
+            <div className="space-y-6">
+              {/* Course Title and Description */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Course Title</label>
+                  <Input
+                    value={editedData.title}
+                    onChange={(e) => setEditedData(prev => ({ ...prev, title: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Description</label>
+                  <Textarea
+                    value={editedData.description}
+                    onChange={(e) => setEditedData(prev => ({ ...prev, description: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Description</label>
-                <Textarea
-                  value={editedData.description}
-                  onChange={(e) => setEditedData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                />
+
+              {/* Course Objectives */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  <label className="text-sm font-medium text-gray-700">Course Objectives</label>
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add a learning objective"
+                    value={newObjective}
+                    onChange={(e) => setNewObjective(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddObjective()}
+                  />
+                  <Button onClick={handleAddObjective} variant="outline" size="sm">Add</Button>
+                </div>
+                <div className="space-y-2">
+                  {editedData.objectives?.map((objective, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span className="text-sm">{objective}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveObjective(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  )) || <p className="text-gray-500 text-sm">No objectives added yet</p>}
+                </div>
               </div>
-              <div className="flex gap-2">
+
+              {/* Course Tags */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  <label className="text-sm font-medium text-gray-700">Course Tags</label>
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add a tag"
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                  />
+                  <Button onClick={handleAddTag} variant="outline" size="sm">Add</Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {editedData.tags?.map(tag => (
+                    <Badge key={tag} variant="secondary" className="cursor-pointer" onClick={() => handleRemoveTag(tag)}>
+                      {tag} ×
+                    </Badge>
+                  )) || <p className="text-gray-500 text-sm">No tags added yet</p>}
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-4 border-t">
                 <Button onClick={handleSaveEdit} size="sm">Save Changes</Button>
                 <Button variant="outline" onClick={() => setIsEditing(false)} size="sm">Cancel</Button>
               </div>
             </div>
           ) : (
-            <>
-              <h3 className="text-xl font-bold text-gray-900">{courseData.title}</h3>
-              <p className="text-gray-600">{courseData.description}</p>
-              <div className="flex gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  <span>{courseData.estimatedDuration}</span>
-                </div>
-                <Badge variant="secondary">{courseData.difficulty}</Badge>
-                <span>{courseData.chapters.length} chapters</span>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Course Objectives */}
-      <Card className="bg-white/70 backdrop-blur-sm border-0">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Course Objectives
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {isEditing ? (
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a learning objective"
-                  value={newObjective}
-                  onChange={(e) => setNewObjective(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleAddObjective()}
-                />
-                <Button onClick={handleAddObjective} variant="outline" size="sm">Add</Button>
-              </div>
-              <div className="space-y-2">
-                {editedData.objectives?.map((objective, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                    <span className="text-sm">{objective}</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveObjective(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      ×
-                    </Button>
+            <div className="space-y-6">
+              {/* Course Title and Description */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{courseData.title}</h3>
+                <p className="text-gray-600 mb-4">{courseData.description}</p>
+                <div className="flex gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{courseData.estimatedDuration}</span>
                   </div>
-                )) || <p className="text-gray-500 text-sm">No objectives added yet</p>}
+                  <Badge variant="secondary">{courseData.difficulty}</Badge>
+                  <span>{courseData.chapters.length} chapters</span>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {courseData.objectives && courseData.objectives.length > 0 ? (
-                <ul className="space-y-2">
-                  {courseData.objectives.map((objective, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-700">{objective}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 text-sm">No learning objectives defined yet. Click Edit to add them.</p>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
-      {/* Course Tags */}
-      <Card className="bg-white/70 backdrop-blur-sm border-0">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Tag className="h-5 w-5" />
-            Course Tags
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {isEditing ? (
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a tag"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
-                />
-                <Button onClick={handleAddTag} variant="outline" size="sm">Add</Button>
+              {/* Course Objectives */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4" />
+                  <h4 className="font-medium text-gray-900">Course Objectives</h4>
+                </div>
+                {courseData.objectives && courseData.objectives.length > 0 ? (
+                  <ul className="space-y-2">
+                    {courseData.objectives.map((objective, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700 text-sm">{objective}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500 text-sm">No learning objectives defined yet. Click Edit to add them.</p>
+                )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                {editedData.tags?.map(tag => (
-                  <Badge key={tag} variant="secondary" className="cursor-pointer" onClick={() => handleRemoveTag(tag)}>
-                    {tag} ×
-                  </Badge>
-                )) || <p className="text-gray-500 text-sm">No tags added yet</p>}
+
+              {/* Course Tags */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Tag className="h-4 w-4" />
+                  <h4 className="font-medium text-gray-900">Course Tags</h4>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {courseData.tags && courseData.tags.length > 0 ? (
+                    courseData.tags.map(tag => (
+                      <Badge key={tag} variant="outline">{tag}</Badge>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm">No tags added yet. Click Edit to add them.</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {courseData.tags && courseData.tags.length > 0 ? (
-                courseData.tags.map(tag => (
-                  <Badge key={tag} variant="outline">{tag}</Badge>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm">No tags added yet. Click Edit to add them.</p>
-              )}
             </div>
           )}
         </CardContent>
