@@ -18,6 +18,8 @@ interface CourseData {
   difficulty: string;
   estimatedDuration: string;
   chapters: Chapter[];
+  objectives?: string[];
+  tags?: string[];
 }
 
 interface CourseStructure {
@@ -53,6 +55,14 @@ export const useCourseGeneration = () => {
     description: "A comprehensive course covering ML fundamentals, algorithms, and practical applications.",
     difficulty: "intermediate",
     estimatedDuration: "8 hours",
+    objectives: [
+      "Understand the fundamental concepts of machine learning",
+      "Learn to implement supervised and unsupervised learning algorithms",
+      "Apply machine learning techniques to real-world problems",
+      "Evaluate and optimize machine learning models",
+      "Use popular ML libraries and frameworks"
+    ],
+    tags: ["Machine Learning", "AI", "Python", "Data Science", "Algorithms"],
     chapters: [
       {
         id: 1,

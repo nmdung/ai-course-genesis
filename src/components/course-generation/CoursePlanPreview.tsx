@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Clock, BookOpen, Edit3, CheckCircle } from "lucide-react";
+import { Clock, BookOpen, Edit3, CheckCircle, Target, Tag } from "lucide-react";
 import { useState } from "react";
 
 interface CourseData {
@@ -18,6 +18,8 @@ interface CourseData {
     summary: string;
     estimatedTime: string;
   }>;
+  objectives?: string[];
+  tags?: string[];
 }
 
 interface CoursePlanPreviewProps {
@@ -29,12 +31,42 @@ interface CoursePlanPreviewProps {
 const CoursePlanPreview = ({ courseData, onApprove, onEdit }: CoursePlanPreviewProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(courseData);
+  const [newObjective, setNewObjective] = useState("");
+  const [newTag, setNewTag] = useState("");
 
   const handleSaveEdit = () => {
     onEdit("title", editedData.title);
     onEdit("description", editedData.description);
     onEdit("difficulty", editedData.difficulty);
+    onEdit("objectives", editedData.objectives);
+    onEdit("tags", editedData.tags);
     setIsEditing(false);
+  };
+
+  const handleAddObjective = () => {
+    if (newObjective.trim()) {
+      const updatedObjectives = [...(editedData.objectives || []), newObjective.trim()];
+      setEditedData(prev => ({ ...prev, objectives: updatedObjectives }));
+      setNewObjective("");
+    }
+  };
+
+  const handleRemoveObjective = (index: number) => {
+    const updatedObjectives = editedData.objectives?.filter((_, i) => i !== index) || [];
+    setEditedData(prev => ({ ...prev, objectives: updatedObjectives }));
+  };
+
+  const handleAddTag = () => {
+    if (newTag.trim() && !editedData.tags?.includes(newTag.trim())) {
+      const updatedTags = [...(editedData.tags || []), newTag.trim()];
+      setEditedData(prev => ({ ...prev, tags: updatedTags }));
+      setNewTag("");
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    const updatedTags = editedData.tags?.filter(t => t !== tag) || [];
+    setEditedData(prev => ({ ...prev, tags: updatedTags }));
   };
 
   return (
@@ -91,6 +123,103 @@ const CoursePlanPreview = ({ courseData, onApprove, onEdit }: CoursePlanPreviewP
                 <span>{courseData.chapters.length} chapters</span>
               </div>
             </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Course Objectives */}
+      <Card className="bg-white/70 backdrop-blur-sm border-0">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5" />
+            Course Objectives
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {isEditing ? (
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add a learning objective"
+                  value={newObjective}
+                  onChange={(e) => setNewObjective(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddObjective()}
+                />
+                <Button onClick={handleAddObjective} variant="outline" size="sm">Add</Button>
+              </div>
+              <div className="space-y-2">
+                {editedData.objectives?.map((objective, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm">{objective}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveObjective(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      ×
+                    </Button>
+                  </div>
+                )) || <p className="text-gray-500 text-sm">No objectives added yet</p>}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {courseData.objectives && courseData.objectives.length > 0 ? (
+                <ul className="space-y-2">
+                  {courseData.objectives.map((objective, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700">{objective}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 text-sm">No learning objectives defined yet. Click Edit to add them.</p>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Course Tags */}
+      <Card className="bg-white/70 backdrop-blur-sm border-0">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5" />
+            Course Tags
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {isEditing ? (
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add a tag"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                />
+                <Button onClick={handleAddTag} variant="outline" size="sm">Add</Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {editedData.tags?.map(tag => (
+                  <Badge key={tag} variant="secondary" className="cursor-pointer" onClick={() => handleRemoveTag(tag)}>
+                    {tag} ×
+                  </Badge>
+                )) || <p className="text-gray-500 text-sm">No tags added yet</p>}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {courseData.tags && courseData.tags.length > 0 ? (
+                courseData.tags.map(tag => (
+                  <Badge key={tag} variant="outline">{tag}</Badge>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No tags added yet. Click Edit to add them.</p>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>
