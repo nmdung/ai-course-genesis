@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,11 +23,25 @@ interface CourseData {
   tags?: string[];
 }
 
+interface SubSection {
+  id: string;
+  title: string;
+  description: string;
+  estimatedTime: string;
+}
+
+interface CourseStructureChapter {
+  id: string;
+  title: string;
+  description: string;
+  estimatedTime: string;
+  subSections: SubSection[];
+  quizzes: number;
+  assignments: number;
+}
+
 interface CourseStructure {
-  sections: number;
-  pagesPerSection: number;
-  quizzesPerSection: number;
-  questionsPerQuiz: number;
+  chapters: CourseStructureChapter[];
   courseSummary: boolean;
   generateAIImages: boolean;
 }
@@ -42,10 +57,64 @@ export const useCourseGeneration = () => {
   const [sourceType, setSourceType] = useState<string>("");
   const [sourceFiles, setSourceFiles] = useState<string>("");
   const [courseStructure, setCourseStructure] = useState<CourseStructure>({
-    sections: 3,
-    pagesPerSection: 1,
-    quizzesPerSection: 1,
-    questionsPerQuiz: 1,
+    chapters: [
+      {
+        id: "chapter-1",
+        title: "Introduction to Machine Learning",
+        description: "Overview of ML concepts and applications",
+        estimatedTime: "90 minutes",
+        subSections: [
+          {
+            id: "sub-1-1",
+            title: "What is Machine Learning?",
+            description: "Basic definitions and concepts",
+            estimatedTime: "30 minutes"
+          },
+          {
+            id: "sub-1-2",
+            title: "Types of Machine Learning",
+            description: "Supervised, unsupervised, and reinforcement learning",
+            estimatedTime: "45 minutes"
+          },
+          {
+            id: "sub-1-3",
+            title: "Real-world Applications",
+            description: "Examples of ML in industry",
+            estimatedTime: "15 minutes"
+          }
+        ],
+        quizzes: 1,
+        assignments: 0
+      },
+      {
+        id: "chapter-2",
+        title: "Supervised Learning",
+        description: "Deep dive into supervised learning algorithms",
+        estimatedTime: "120 minutes",
+        subSections: [
+          {
+            id: "sub-2-1",
+            title: "Linear Regression",
+            description: "Understanding linear relationships in data",
+            estimatedTime: "45 minutes"
+          },
+          {
+            id: "sub-2-2",
+            title: "Classification Algorithms",
+            description: "Decision trees, SVM, and more",
+            estimatedTime: "60 minutes"
+          },
+          {
+            id: "sub-2-3",
+            title: "Model Evaluation",
+            description: "Metrics and validation techniques",
+            estimatedTime: "15 minutes"
+          }
+        ],
+        quizzes: 2,
+        assignments: 1
+      }
+    ],
     courseSummary: true,
     generateAIImages: false
   });
@@ -132,6 +201,15 @@ export const useCourseGeneration = () => {
   };
 
   const handleStructureNext = () => {
+    if (courseStructure.chapters.length === 0) {
+      toast({
+        title: "Chapters Required",
+        description: "Please add at least one chapter before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setCurrentStep("planning");
     setIsGenerating(true);
     
