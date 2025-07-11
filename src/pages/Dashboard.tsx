@@ -94,7 +94,7 @@ const Dashboard = () => {
               <p className="text-gray-600">Manage your courses, quizzes, and track student progress</p>
             </div>
             <Button asChild className="mt-4 sm:mt-0 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              <Link to="/upload">
+              <Link to="/course-generation">
                 <Plus className="h-4 w-4 mr-2" />
                 Create New Course
               </Link>

@@ -66,7 +66,7 @@ const Navbar = () => {
                   {t('dashboard')}
                 </Link>
                 {userRole === "teacher" && (
-                  <Link to="/upload" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <Link to="/course-generation" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     {t('createCourse')}
                   </Link>
                 )}
@@ -213,7 +213,7 @@ const Navbar = () => {
                   </Link>
                   {userRole === "teacher" && (
                     <Link 
-                      to="/upload" 
+                      to="/course-generation" 
                       className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1"
                       onClick={() => setIsMenuOpen(false)}
                     >
